@@ -12,24 +12,14 @@ vocab <- create_vocabulary(itoken_parallel(reviews$Sentiment_Text,preprocessor =
 
 dtm_train <- create_dtm(itoken_parallel(reviews$Sentiment_Text,preprocessor = tolower,tokenizer = word_tokenizer),vocab_vectorizer(vocab))
 
-# train_matrix <- xgb.DMatrix(dtm_train, label = reviews$Sentiment)
-# 
-# xgb_params = list(objective = "binary:logistic",eta = 0.12,max.depth = 40,eval_metric = "auc",nthread=8)
-# 
-# xgb_fit <- xgboost(data = train_matrix, params = xgb_params, nrounds = 10)
-# 
-# set.seed(1)
-# cv <- xgb.cv(data = train_matrix, label = reviews$Sentiment, nfold = 5,nrounds = 20,metrics = c("auc"),nthread=8)
-# 
-# pred <- predict(xgb_fit, dtm_train)
-# 
-# pred.resp <- ifelse(pred >= 0.5, 1, 0)
-# 
-# 
-# confusionMatrix(as.factor(pred.resp),as.factor(reviews$Sentiment), positive="1")
-# 
-# #confusionMatrix(factor(pred.resp),reviews$Sentiment, positive="1")
-# print(confusionMatrix(as.factor(pred.resp), as.factor(reviews$Sentiment)))
+train_matrix <- xgb.DMatrix(dtm_train, label = reviews$Sentiment)
+xgb_params = list(objective = "binary:logistic",eta = 0.12,max.depth = 40,eval_metric = "auc",nthread=8)
+xgb_fit <- xgboost(data = train_matrix, params = xgb_params, nrounds = 10)
+set.seed(1)
+cv <- xgb.cv(data = train_matrix, label = reviews$Sentiment, nfold = 5,nrounds = 20,metrics = c("auc"),nthread=8)
+pred <- predict(xgb_fit, dtm_train)
+pred.resp <- ifelse(pred >= 0.5, 1, 0)
+print(confusionMatrix(as.factor(pred.resp), as.factor(reviews$Sentiment)))
 
 
 
